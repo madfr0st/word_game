@@ -3,13 +3,17 @@
 		Word Game
 	</div>
 
-	<div class="score_board">
-		Score : <p class = "score" [class.update] = "score_updated"> {{ game_score }} </p>
+	<div id="time" class ="timer">
+		lmao
+	</div>
+
+	<div class="score"> Score: 
+		<div class = "score-board" [class.selected] = "score_updated"> {{ game_score }} </div>
 	</div>
 
 	<div class="main" >
 		<div class="row-container" *ngFor = "let row of Grid" #tryContainer >
-			<div class="column-container" *ngFor = "let box of row.column" id ="id" (pan)="logPan($event)" (mouseover) = "mymethod_over(box.x, box.y)" (mouseout) = "mymethod_out(box.x, box.y)" 
+			<div class="column-container" *ngFor = "let box of row.column" id ="id" (mouseover) = "mymethod_over(box.x, box.y)" (mouseout) = "mymethod_out(box.x, box.y)" 
 			[class.selected] = "box.state == selected" [class.right] = "box.state == right" [class.wrong] = "box.state == wrong">
 				{{box.text}}
 			</div>

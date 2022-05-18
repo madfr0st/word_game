@@ -160,7 +160,10 @@ export class WordComponent {
           this.score_updated = true;
           setTimeout(() => {
             this.score_updated = false;
-          }, 500);
+          }, 1500);
+          console.log('score_updated', this.score_updated);
+
+
           //reset the current word.
           this.Word = '';
           this.CurrentWord = [];
@@ -184,19 +187,7 @@ export class WordComponent {
   }
 
   //for touch screen
-  touch_over(event: any){
-    console.log(event.center.x);
-    // this.currentX = x; 
-    // this.currentY = y;
-    // if(this.mouse_hold && this.Grid[y].column[x].state === this.not_selected){
-    //   const char = this.Grid[y].column[x].text;
-    //   this.Word += char.toLowerCase();
-    //   this.CurrentWord.push(this.Grid[y].column[x]);
-    //   this.Grid[y].column[x].state = this.selected;
-    // }
-  }
-
-  logPan(evt: any) {
-    console.log('\n Touch Pan: '+ `(${evt.center.x}, ${evt.center.y})`);
-  }
+  // touch_over(x: number, y: number){
+  //   console.log(x, y);
+  // }
 }
