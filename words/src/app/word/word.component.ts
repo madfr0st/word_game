@@ -1,4 +1,5 @@
-import { Component, HostListener, ɵclearResolutionOfComponentResourcesQueue } from '@angular/core';
+import { DOCUMENT } from '@angular/common';
+import { Component, HostListener, Inject } from '@angular/core';
 
 const WIDTH = 8;
 const HEIGHT = 8;
@@ -58,6 +59,8 @@ export class WordComponent {
   game_score: number = 0;
   score_updated: boolean = false;
 
+  show_menu: boolean = false;
+
   // fetch here.
 
   array_length: number = 0;
@@ -65,6 +68,9 @@ export class WordComponent {
   final_url: string = '';
 
   constructor() {
+    // show the main menu
+    this.show_menu = true;
+    //make the grid.
     for(let i = 0; i < HEIGHT; i++){
       const column : box[] = [];
       for(let j = 0; j < WIDTH; j++){
@@ -190,4 +196,24 @@ export class WordComponent {
   // touch_over(x: number, y: number){
   //   console.log(x, y);
   // }
+
+  // el: HTMLElement = document.getElementById('time');
+  // st: HTMLDivElement = <div id = "time" class ="timer"> </div>;
+
+
+  // change the lenght of bar according to time.
+  bar_length: number = 100;
+  start_time = setInterval(() => {
+    if(this.show_menu === false) this.bar_length -= (100/60);  // for 1 minutes
+  }, 1000);
+  
+  main_menu(){
+    this.bar_length = 100;
+    this.show_menu = false;
+    this.game_score = 0; 
+    setTimeout(() => {
+      this.show_menu = true;
+    }, 60000);
+  }
+
 }

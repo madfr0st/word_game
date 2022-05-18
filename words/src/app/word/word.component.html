@@ -1,10 +1,13 @@
 <div class="container">
 	<div class="title">
-		Word Game
+		Word Game  
+		<button>
+			?
+		</button>
 	</div>
 
 	<div id="time" class ="timer">
-		lmao
+		<div class="temp" style ="width: {{bar_length}}%"> </div> 
 	</div>
 
 	<div class="score"> Score: 
@@ -19,4 +22,12 @@
 			</div>
 		</div>
 	</div>
+
+	<div class="info-dialog-container" [class.show] = "show_menu">
+		<div class="info-dialog" [class.show] = "show_menu">
+			<button (click) = "main_menu()"> Start </button>
+		</div>
+	</div> 
+
+	<div class="self"> <p class = "text"> Made by Gagan</p></div>
 </div>
