@@ -1,8 +1,7 @@
-import { Component, HostListener } from '@angular/core';
-import { SelectMultipleControlValueAccessor } from '@angular/forms';
+import { Component, HostListener, ɵclearResolutionOfComponentResourcesQueue } from '@angular/core';
 
-const WIDTH = 6;
-const HEIGHT = 6;
+const WIDTH = 8;
+const HEIGHT = 8;
 
 
 interface row {
@@ -20,6 +19,7 @@ enum states{
   NOT_SELECTED,
   SELECTED,
   RIGHT,
+  WRONG
 }
 
 @Component({
@@ -34,9 +34,17 @@ export class WordComponent {
   Grid : row[] = [];
   CurrentWord: box[] = [];
   Word: string = '';
+  Alphabets: string[] = ['A', 'A', 'A', 'A', 'A', 'A', 'A', 'A', 'B', 'B', 'C', 'C', 'C', 'C', 'C',
+   'D', 'D', 'D', 'E', 'E', 'E', 'E', 'E', 'E', 'E', 'E', 'E', 'E', 'E', 'F', 'F', 'G', 'G', 'H', 'H',
+   'H', 'I', 'I', 'I', 'I', 'I', 'I', 'I', 'J', 'K', 'L', 'L', 'L', 'L', 'L', 'M', 'M', 'M', 'N', 'N',
+   'N', 'N', 'N', 'N', 'N', 'O', 'O', 'O', 'O', 'O', 'O', 'O', 'P', 'P', 'P', 'Q', 'R', 'R', 'R', 'R',
+   'R', 'R', 'R', 'S', 'S', 'S', 'S', 'S', 'T', 'T', 'T', 'T', 'T', 'T', 'T', 'U', 'U', 'U', 'U', 'V',
+   'W', 'X', 'Y', 'Y', 'Z'];
+
+  not_selected = states.NOT_SELECTED;
   selected = states.SELECTED;
   right = states.RIGHT;
-  wrong = states.NOT_SELECTED;
+  wrong = states.WRONG;
 
   box_id : number = 0;
 
@@ -47,7 +55,16 @@ export class WordComponent {
   preX: number = -1;
   preY: number = -1;
 
-  constructor() { 
+  game_score: number = 0;
+  score_updated: boolean = false;
+
+  // fetch here.
+
+  array_length: number = 0;
+  url_const: string = 'https://api.dictionaryapi.dev/api/v2/entries/en/';
+  final_url: string = '';
+
+  constructor() {
     for(let i = 0; i < HEIGHT; i++){
       const column : box[] = [];
       for(let j = 0; j < WIDTH; j++){
@@ -61,7 +78,8 @@ export class WordComponent {
 
   //generates random character;
   generate_char(){
-    let char : string = String.fromCharCode(65 + Math.floor(Math.random() * 26));
+    // let char : string = String.fromCharCode(65 + Math.floor(Math.random() * 26));
+    let char : string = this.Alphabets[Math.floor(Math.random() * 100)];
     return char;
   }
 
@@ -70,11 +88,11 @@ export class WordComponent {
     // console.log(x, y);
     this.currentX = x; 
     this.currentY = y;
-    if(this.mouse_hold){
-      this.Grid[y].column[x].state = states.SELECTED;
+    if(this.mouse_hold && this.Grid[y].column[x].state === this.not_selected){
       const char = this.Grid[y].column[x].text;
       this.Word += char.toLowerCase();
       this.CurrentWord.push(this.Grid[y].column[x]);
+      this.Grid[y].column[x].state = this.selected;
     }
   }
 
@@ -94,43 +112,91 @@ export class WordComponent {
 
   // listen to when click is left.
   @HostListener('document:mouseup', ['$event'])
-  onMouseUp(event: MouseEvent) {
+  async onMouseUp(event: MouseEvent) {
+    // lift the mouse first.
+    this.mouse_hold = false;
+
     console.log(this.Word);
 
-    // check it the word formed is valid or not.
-    if(this.isValid(this.Word)){
-      for(let i = 0; i < this.CurrentWord.length; i++){
-        this.CurrentWord[i].state = this.right;
-      }
+    if(this.Word.length !== 0){
+      // make the url;
+      this.final_url = this.url_const + this.Word;
+      //call async http req. to set the array_length from the json data.
+      console.log('sending', this.array_length);
 
-      //generate new characters after 0.5sec.
-      setTimeout(() => {
+      const url: string = this.final_url;
+      //check word from the dictonary.
+      const options = {
+        method: 'GET',
+      };
+      
+      await fetch(url, options)
+        .then(response => response.json())
+        .then((data) => {
+          console.log(data);
+          console.log(data.length);
+          this.array_length = data.length;
+        })
+        .catch(err => console.error(err));
+
+      console.log('receiving', this.array_length);
+      
+      // check it the word formed is valid or not.
+      if(this.array_length !== undefined && this.array_length !== 0){
         for(let i = 0; i < this.CurrentWord.length; i++){
-          let char: string = this.generate_char();
+          this.CurrentWord[i].state = this.right;
+        }
+
+        //generate new characters after 0.5sec.
+        setTimeout(() => {
+          for(let i = 0; i < this.CurrentWord.length; i++){
+            let char: string = this.generate_char();
+            this.CurrentWord[i].state = this.not_selected;
+            this.CurrentWord[i].text = char;
+          }
+          
+          //add the score.
+          this.game_score += this.CurrentWord.length * this.CurrentWord.length;
+          this.score_updated = true;
+          setTimeout(() => {
+            this.score_updated = false;
+          }, 500);
+          //reset the current word.
+          this.Word = '';
+          this.CurrentWord = [];
+          this.array_length = 0;
+        }, 500);
+      }else{
+        for(let i = 0; i < this.CurrentWord.length; i++){
           this.CurrentWord[i].state = this.wrong;
-          this.CurrentWord[i].text = char;
         }
 
         //reset the current word.
-        this.Word = '';
-        this.CurrentWord = [];
-      }, 500);
-    }else{
-      for(let i = 0; i < this.CurrentWord.length; i++){
-        this.CurrentWord[i].state = this.wrong;
+        setTimeout(() => {
+          for(let i = 0; i < this.CurrentWord.length; i++){
+            this.CurrentWord[i].state = this.not_selected;
+          }
+          this.Word = '';
+          this.CurrentWord = [];
+        }, 500);
       }
-
-      //reset the current word.
-      this.Word = '';
-      this.CurrentWord = [];
     }
-
-    this.mouse_hold = false;
   }
 
-  // function to check if the word is valid or not.
-  private isValid(word: string){
-    return false;
+  //for touch screen
+  touch_over(event: any){
+    console.log(event.center.x);
+    // this.currentX = x; 
+    // this.currentY = y;
+    // if(this.mouse_hold && this.Grid[y].column[x].state === this.not_selected){
+    //   const char = this.Grid[y].column[x].text;
+    //   this.Word += char.toLowerCase();
+    //   this.CurrentWord.push(this.Grid[y].column[x]);
+    //   this.Grid[y].column[x].state = this.selected;
+    // }
   }
-  
+
+  logPan(evt: any) {
+    console.log('\n Touch Pan: '+ `(${evt.center.x}, ${evt.center.y})`);
+  }
 }
