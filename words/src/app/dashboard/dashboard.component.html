@@ -1,0 +1,11 @@
+<mat-sidenav-container class="example-container">
+	<mat-sidenav #sidenav [mode]="'over'">
+		<div style="width: 300px;background-color: rgb(123, 82, 28); height: 100%;">
+
+		</div>
+	</mat-sidenav>
+
+	<mat-sidenav-content>
+		<app-word (open)="event()"></app-word>
+	</mat-sidenav-content>
+</mat-sidenav-container>

@@ -1,47 +1,58 @@
 <div class="container">
-	<div class="title">
-		Word Game  
-		<button (click) = "help()"> ?
-			
-		</button>
+
+	<div class="title" style="display: flex; justify-content: space-between;">
+		<div style="width: 100px;">
+			<button style="width: 30px;height: 30px; border-radius: 100%; background-color: aqua;"
+				(click)="openNav()"></button>
+		</div>
+		<div style="width: max-content;;">
+			Word Game
+			<button (click)="help()"> ?
+			</button>
+		</div>
+		<div style="width: 100px;"></div>
 	</div>
 
-	<div id="time" class ="timer">
-		<div class="temp" style ="width: {{bar_length}}%"> </div> 
+	<div id="time" class="timer">
+		<div class="temp" style="width: {{bar_length}}%"> </div>
 	</div>
 
-	<div class="score"> Score: 
-		<div class = "score-board" [class.selected] = "score_updated"> {{ game_score }} </div>
+	<div class="score"> Score:
+		<div class="score-board" [class.selected]="score_updated"> {{ game_score }} </div>
 	</div>
 
-	<div class="main" >
-		<div class="row-container" *ngFor = "let row of Grid" #tryContainer >
-			<div class="column-container" *ngFor = "let box of row.column" id ="id" (mouseover) = "mymethod_over(box.x, box.y)" (mouseout) = "mymethod_out(box.x, box.y)" 
-			[class.selected] = "box.state == selected" [class.right] = "box.state == right" [class.wrong] = "box.state == wrong">
+	<div class="main">
+		<div class="row-container" *ngFor="let row of Grid" #tryContainer>
+			<div class="column-container" *ngFor="let box of row.column" id="id"
+				(mouseover)="mymethod_over(box.x, box.y)" (mouseout)="mymethod_out(box.x, box.y)"
+				[class.selected]="box.state == selected" [class.right]="box.state == right"
+				[class.wrong]="box.state == wrong">
 				{{box.text}}
 			</div>
 		</div>
 	</div>
 
-	<div class="info-dialog-container" [class.show] = "show_menu">
-		<div class="info-dialog" [class.show] = "show_menu">
-			<button (click) = "main_menu()"> Start </button>
+	<div class="info-dialog-container" [class.show]="show_menu">
+		<div class="info-dialog" [class.show]="show_menu">
+			<button (click)="main_menu()"> Start </button>
 		</div>
-	</div> 
+	</div>
 
-	<div class="self"> <p class = "text"> Made by Gagan</p></div>
+	<div class="self">
+		<p class="text"> Made by Gagan</p>
+	</div>
 
-	<div class ="help-container" [class.show-help] = "show_help_menu">
-		<div class="help-box" [class.show-help] = "show_help_menu">
-			<p class = "text"> * Make a valid word of any length without lifting your mouse.
+	<div class="help-container" [class.show-help]="show_help_menu">
+		<div class="help-box" [class.show-help]="show_help_menu">
+			<p class="text"> * Make a valid word of any length without lifting your mouse.
 				<br><br>
 				* Time Limit: 1 minute.
-			</p> 
-			<div class = "images" >
-				<img src = assets\images\img1.png>
-				<img src = assets\images\img2.png>
+			</p>
+			<div class="images">
+				<img src=assets\images\img1.png>
+				<img src=assets\images\img2.png>
 			</div>
-			<button (click) = "resume()">
+			<button (click)="resume()">
 				Resume
 			</button>
 		</div>
