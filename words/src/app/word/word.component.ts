@@ -1,5 +1,4 @@
-import { DOCUMENT } from '@angular/common';
-import { Component, HostListener, Inject } from '@angular/core';
+import { Component, HostListener} from '@angular/core';
 
 const WIDTH = 8;
 const HEIGHT = 8;
@@ -60,6 +59,7 @@ export class WordComponent {
   score_updated: boolean = false;
 
   show_menu: boolean = false;
+  timer_running: boolean = false;
 
   // fetch here.
 
@@ -204,16 +204,60 @@ export class WordComponent {
   // change the lenght of bar according to time.
   bar_length: number = 100;
   start_time = setInterval(() => {
-    if(this.show_menu === false) this.bar_length -= (100/60);  // for 1 minutes
+    if(this.timer_running) this.bar_length -= (100/60);  // for 1 minutes
   }, 1000);
   
   main_menu(){
     this.bar_length = 100;
     this.show_menu = false;
+    this.timer_running = true;
     this.game_score = 0; 
     setTimeout(() => {
       this.show_menu = true;
+      this.timer_running = false;
     }, 60000);
   }
+
+  show_help_menu: boolean = false;
+
+  help(){
+    this.show_help_menu = true;
+    this.timer_running = false;
+  }
+
+  resume(){
+    this.show_help_menu = false;
+    this.timer_running = true;
+  }
+
+  // Timer = function(callback: any, delay: number) {
+  //   timerId;
+  //   start, remaining = delay;
+
+  //   this.pause = function() {
+  //       window.clearTimeout(timerId);
+  //       timerId = null;
+  //       remaining -= Date.now() - start;
+  //   };
+
+  //   this.resume = function() {
+  //       if (timerId) {
+  //           return;
+  //       }
+
+  //       start = Date.now();
+  //       timerId = window.setTimeout(callback, remaining);
+  //   };
+
+  //   this.resume();
+  // };
+
+  // var timer = new Timer(function() {
+  //     alert("Done!");
+  // }, 1000);
+
+  // timer.pause();
+  // // Do some stuff...
+  // timer.resume();
 
 }

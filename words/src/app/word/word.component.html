@@ -1,8 +1,8 @@
 <div class="container">
 	<div class="title">
 		Word Game  
-		<button>
-			?
+		<button (click) = "help()"> ?
+			
 		</button>
 	</div>
 
@@ -30,4 +30,20 @@
 	</div> 
 
 	<div class="self"> <p class = "text"> Made by Gagan</p></div>
+
+	<div class ="help-container" [class.show-help] = "show_help_menu">
+		<div class="help-box" [class.show-help] = "show_help_menu">
+			<p class = "text"> * Make a valid word of any length without lifting your mouse.
+				<br><br>
+				* Time Limit: 1 minute.
+			</p> 
+			<div class = "images" >
+				<img src = assets\images\img1.png>
+				<img src = assets\images\img2.png>
+			</div>
+			<button (click) = "resume()">
+				Resume
+			</button>
+		</div>
+	</div>
 </div>
