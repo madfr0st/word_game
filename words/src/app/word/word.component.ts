@@ -197,67 +197,64 @@ export class WordComponent {
   //   console.log(x, y);
   // }
 
-  // el: HTMLElement = document.getElementById('time');
-  // st: HTMLDivElement = <div id = "time" class ="timer"> </div>;
 
-
-  // change the lenght of bar according to time.
+  // change the lenght of time bar according to time.
   bar_length: number = 100;
   start_time = setInterval(() => {
-    if(this.timer_running) this.bar_length -= (100/60);  // for 1 minutes
+    if(this.timer_running) this.bar_length = Math.max(this.bar_length - (100/60), 0);  // for 1 minutes
   }, 1000);
   
+  // starting main menu.
   main_menu(){
     this.bar_length = 100;
     this.show_menu = false;
     this.timer_running = true;
     this.game_score = 0; 
-    setTimeout(() => {
-      this.show_menu = true;
-      this.timer_running = false;
-    }, 60000);
+    this.startTimer();
   }
 
   show_help_menu: boolean = false;
 
+  // pause the game for help.
   help(){
     this.show_help_menu = true;
     this.timer_running = false;
+    this.pauseTimer();
   }
 
+  // resume the game.
   resume(){
     this.show_help_menu = false;
     this.timer_running = true;
+    this.startTimer();
   }
 
-  // Timer = function(callback: any, delay: number) {
-  //   timerId;
-  //   start, remaining = delay;
+  // time variables.
+  timer_id: any = null;
+  time: number = 10000;
+  initial_time: number = 0;
+  remaining_time: number = 1000 * 60;
 
-  //   this.pause = function() {
-  //       window.clearTimeout(timerId);
-  //       timerId = null;
-  //       remaining -= Date.now() - start;
-  //   };
+  // pauser the timer.
+  pauseTimer(){
+    clearTimeout(this.timer_id);
+    console.log("timer paused");
+    this.timer_id = null;
+    this.remaining_time -= Date.now() - this.initial_time;
+  }
 
-  //   this.resume = function() {
-  //       if (timerId) {
-  //           return;
-  //       }
+  // start the timer.
+  startTimer(){
+    if(this.timer_id) {
+      return;
+    }
 
-  //       start = Date.now();
-  //       timerId = window.setTimeout(callback, remaining);
-  //   };
-
-  //   this.resume();
-  // };
-
-  // var timer = new Timer(function() {
-  //     alert("Done!");
-  // }, 1000);
-
-  // timer.pause();
-  // // Do some stuff...
-  // timer.resume();
-
+    this.initial_time = Date.now()
+    this.timer_id = setTimeout(() => {
+      this.show_menu = true;
+      this.timer_running = false;
+      console.log("TimesUp", Date.now() - this.initial_time);
+    }, this.remaining_time);
+  }
+  
 }
