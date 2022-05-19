@@ -201,16 +201,24 @@ export class WordComponent {
   // change the lenght of time bar according to time.
   bar_length: number = 100;
   start_time = setInterval(() => {
-    if(this.timer_running) this.bar_length = Math.max(this.bar_length - (100/60), 0);  // for 1 minutes
-  }, 1000);
+    if(this.timer_running && this.bar_length !== 0) this.bar_length = Math.max(this.bar_length - (100/600), 0);  // for 1 minutes
+    
+    // implementing time here.
+    if(this.bar_length === 0){
+      this.timer_running = false;
+    }
+    if(!this.timer_running && this.bar_length === 0){
+      this.show_menu = true;
+    }
+  }, 100);
   
-  // starting main menu.
+  // // after pressing start on main_menu.
   main_menu(){
     this.bar_length = 100;
     this.show_menu = false;
     this.timer_running = true;
     this.game_score = 0; 
-    this.startTimer();
+    // this.startTimer();
   }
 
   show_help_menu: boolean = false;
@@ -219,15 +227,20 @@ export class WordComponent {
   help(){
     this.show_help_menu = true;
     this.timer_running = false;
-    this.pauseTimer();
+    // this.pauseTimer();
   }
 
   // resume the game.
   resume(){
     this.show_help_menu = false;
     this.timer_running = true;
-    this.startTimer();
+    // this.startTimer();
   }
+
+
+
+
+/// Does't require this section.
 
   // time variables.
   timer_id: any = null;
